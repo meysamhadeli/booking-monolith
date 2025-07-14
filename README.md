@@ -7,9 +7,11 @@
     </div>
 </div>
 
-> 🚀 **A practical and imaginary Monolith for implementing an infrastructure for up and running Monolith system with the latest technology and architecture like Vertical Slice Architecture, Event Driven Architecture, CQRS, DDD in .Net 9.**
+> 🚀 **A practical Monolith architecture with the latest technologies and architecture like Vertical Slice Architecture, Event Driven Architecture, CQRS, DDD in .Net 9.**
 
-> 💡 **This project is not business-oriented and most of my focus was in the thechnical part for implement a Monolith system with a sample project. In this project I implemented some concept in Monolith like Event Driven Architecture, Vertical Slice Architecture, CQRS and DDD.**
+## You can find other version of this project here:
+- [Booking with Microservices Architecture](https://github.com/meysamhadeli/booking-microservices)
+- [Booking with Modular Monolith Architecture](https://github.com/meysamhadeli/booking-modular-monolith)
 
 <a href="https://gitpod.io/#https://github.com/meysamhadeli/booking-monolith"><img alt="Open in Gitpod" src="https://gitpod.io/button/open-in-gitpod.svg"/></a>
 
