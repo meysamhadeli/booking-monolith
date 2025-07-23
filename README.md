@@ -7,7 +7,7 @@
     </div>
 </div>
 
-> 🚀 **A practical Monolith architecture with the latest technologies and architecture like Vertical Slice Architecture, Event Driven Architecture, CQRS, DDD in .Net 9.**
+> 🚀 **A practical Monolith architecture with the latest technologies and architectures like Vertical Slice Architecture, Event Driven Architecture, CQRS, DDD and Aspire in .Net 9.**
 
 ## You can find other version of this project here:
 - [Booking with Microservices Architecture](https://github.com/meysamhadeli/booking-microservices)
@@ -62,7 +62,7 @@
 - :sparkle: Using `OpenTelemetry` for distributed tracing on top of `Jaeger`.
 - :sparkle: Using `OpenTelemetry` for monitoring on top of `Prometheus` and `Grafana`.
 - :sparkle: Using `IdentityServer` for authentication and authorization base on `OpenID-Connect` and `OAuth2`.
-
+- :sparkle: Using `Aspire` for `service discovery`, `observability`, and `local orchestration` of microservices.
 
 ## Technologies - Libraries
 
@@ -91,6 +91,7 @@
 - ✔️ **[`Respawn`](https://github.com/jbogard/Respawn)** - Respawn is a small utility to help in resetting test databases to a clean state.
 - ✔️ **[`Testcontainers`](https://github.com/testcontainers/testcontainers-dotnet)** - Testcontainers for .NET is a library to support tests with throwaway instances of Docker containers.
 - ✔️ **[`K6`](https://github.com/grafana/k6)** - Modern load testing for developers and testers in the DevOps era.
+- ✔️ **[`Aspire`](https://github.com/dotnet/aspire)** - .NET stack for building and orchestrating observable, distributed cloud-native applications.
 
 
 ## Key Features
