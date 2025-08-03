@@ -35,7 +35,7 @@ public static class SharedInfrastructureExtensions
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
         builder.AddServiceDefaults();
-        
+
         builder.Services.AddJwt();
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddTransient<AuthHeaderHandler>();
@@ -66,7 +66,7 @@ public static class SharedInfrastructureExtensions
         builder.AddMinimalEndpoints(assemblies: typeof(BookingMonolithRoot).Assembly);
         builder.Services.AddValidatorsFromAssembly(typeof(BookingMonolithRoot).Assembly);
         builder.Services.AddCustomMapster(typeof(BookingMonolithRoot).Assembly);
-        
+
         builder.AddCustomDbContext<IdentityContext>(nameof(BookingMonolith));
         builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
         builder.AddCustomIdentityServer();
@@ -83,7 +83,7 @@ public static class SharedInfrastructureExtensions
         // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
         builder.Services.AddEventStore(builder.Configuration, typeof(BookingMonolithRoot).Assembly)
             .AddEventStoreDBSubscriptionToAll();
-        
+
         builder.Services.Configure<ForwardedHeadersOptions>(
             options =>
             {
@@ -110,7 +110,7 @@ public static class SharedInfrastructureExtensions
         app.UseServiceDefaults();
 
         app.UseCustomProblemDetails();
-        
+
         // ref: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-7.0#routing-basics
         app.UseAuthentication();
         app.UseAuthorization();
