@@ -17,4 +17,3 @@ public class UserLoginConfiguration : IEntityTypeConfiguration<UserLogin>
         builder.Property(r => r.Version).IsConcurrencyToken();
     }
 }
-

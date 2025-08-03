@@ -12,7 +12,6 @@ using BuildingBlocks.EFCore;
 using BuildingBlocks.EventStoreDB;
 using BuildingBlocks.HealthCheck;
 using BuildingBlocks.Jwt;
-using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.MassTransit;
 using BuildingBlocks.Mongo;
@@ -25,7 +24,6 @@ using Figgle;
 using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace Api.Extensions;
 
@@ -33,26 +31,15 @@ public static class SharedInfrastructureExtensions
 {
     public static WebApplicationBuilder AddSharedInfrastructure(this WebApplicationBuilder builder)
     {
-        builder.Host.UseDefaultServiceProvider(
-            (context, options) =>
-            {
-                // Service provider validation
-                // ref: https://andrewlock.net/new-in-asp-net-core-3-service-provider-validation/
-                options.ValidateScopes = context.HostingEnvironment.IsDevelopment() ||
-                                         context.HostingEnvironment.IsStaging() ||
-                                         context.HostingEnvironment.IsEnvironment("tests");
-
-                options.ValidateOnBuild = true;
-            });
-
         var appOptions = builder.Services.GetOptions<AppOptions>(nameof(AppOptions));
         Console.WriteLine(FiggleFonts.Standard.Render(appOptions.Name));
 
-        builder.AddCustomSerilog(builder.Environment);
+        builder.AddServiceDefaults();
+
         builder.Services.AddJwt();
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddTransient<AuthHeaderHandler>();
-        builder.Services.AddPersistMessageProcessor();
+        builder.AddPersistMessageProcessor();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddControllers();
@@ -80,13 +67,22 @@ public static class SharedInfrastructureExtensions
         builder.Services.AddValidatorsFromAssembly(typeof(BookingMonolithRoot).Assembly);
         builder.Services.AddCustomMapster(typeof(BookingMonolithRoot).Assembly);
 
+        builder.AddCustomDbContext<IdentityContext>(nameof(BookingMonolith));
+        builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
+        builder.AddCustomIdentityServer();
+
+        builder.AddCustomDbContext<FlightDbContext>(nameof(BookingMonolith));
+        builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
+
+        builder.AddCustomDbContext<PassengerDbContext>(nameof(BookingMonolith));
+
         builder.AddMongoDbContext<FlightReadDbContext>();
         builder.AddMongoDbContext<PassengerReadDbContext>();
         builder.AddMongoDbContext<BookingReadDbContext>();
 
-        builder.AddCustomDbContext<IdentityContext>();
-        builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
-        builder.AddCustomIdentityServer();
+        // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
+        builder.Services.AddEventStore(builder.Configuration, typeof(BookingMonolithRoot).Assembly)
+            .AddEventStoreDBSubscriptionToAll();
 
         builder.Services.Configure<ForwardedHeadersOptions>(
             options =>
@@ -95,37 +91,8 @@ public static class SharedInfrastructureExtensions
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
-        builder.AddCustomDbContext<FlightDbContext>();
-        builder.Services.AddScoped<IDataSeeder, FlightDataSeeder>();
-
-        builder.AddCustomDbContext<PassengerDbContext>();
-
-        // ref: https://github.com/oskardudycz/EventSourcing.NetCore/tree/main/Sample/EventStoreDB/ECommerce
-        builder.Services.AddEventStore(builder.Configuration, typeof(BookingMonolithRoot).Assembly)
-            .AddEventStoreDBSubscriptionToAll();
-
         builder.Services.Configure<ApiBehaviorOptions>(
             options => options.SuppressModelStateInvalidFilter = true);
-
-        builder.Services.AddRateLimiter(
-            options =>
-            {
-                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
-                    httpContext =>
-                        RateLimitPartition.GetFixedWindowLimiter(
-                            partitionKey: httpContext.User.Identity?.Name ??
-                                          httpContext.Request.Headers.Host.ToString(),
-                            factory: partition => new FixedWindowRateLimiterOptions
-                            {
-                                AutoReplenishment = true,
-                                PermitLimit = 10,
-                                QueueLimit = 0,
-                                Window = TimeSpan.FromMinutes(1)
-                            }));
-            });
-
-        builder.AddCustomObservability();
-        builder.Services.AddCustomHealthCheck();
 
         builder.Services.AddEasyCaching(
             options => { options.UseInMemory(builder.Configuration, "mem"); });
@@ -140,18 +107,15 @@ public static class SharedInfrastructureExtensions
     {
         var appOptions = app.Configuration.GetOptions<AppOptions>(nameof(AppOptions));
 
-        app.UseCustomProblemDetails();
-        app.UseCustomObservability();
-        app.UseCustomHealthCheck();
+        app.UseServiceDefaults();
 
-        app.UseSerilogRequestLogging(
-            options =>
-            {
-                options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;
-            });
+        app.UseCustomProblemDetails();
+
+        // ref: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/routing?view=aspnetcore-7.0#routing-basics
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.UseCorrelationId();
-        app.UseRateLimiter();
         app.MapGet("/", x => x.Response.WriteAsync(appOptions.Name));
 
         if (app.Environment.IsDevelopment())
