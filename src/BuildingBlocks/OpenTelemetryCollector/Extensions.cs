@@ -151,21 +151,23 @@ public static class Extensions
                         options.RecordException = true;
                         // Don't trace requests to the health endpoint to avoid filling the dashboard with noise
                         options.Filter = httpContext =>
-                                             !(httpContext.Request.Path.StartsWithSegments(
-                                                   HealthEndpointPath, StringComparison.OrdinalIgnoreCase) ||
-                                               httpContext.Request.Path.StartsWithSegments(
-                                                   AlivenessEndpointPath, StringComparison.OrdinalIgnoreCase
-                                               ));
+                            !(
+                                httpContext.Request.Path.StartsWithSegments(
+                                    HealthEndpointPath,
+                                    StringComparison.OrdinalIgnoreCase
+                                )
+                                || httpContext.Request.Path.StartsWithSegments(
+                                    AlivenessEndpointPath,
+                                    StringComparison.OrdinalIgnoreCase
+                                )
+                            );
                     })
                     .AddGrpcClientInstrumentation()
                     .AddHttpClientInstrumentation(instrumentationOptions =>
                     {
                         instrumentationOptions.RecordException = true;
                     })
-                    .AddEntityFrameworkCoreInstrumentation(instrumentationOptions =>
-                    {
-                        instrumentationOptions.SetDbStatementForText = true;
-                    })
+                    .AddEntityFrameworkCoreInstrumentation()
                     .AddSource(DiagnosticHeaders.DefaultListenerName)
                     .AddNpgsql()
                     // `AddSource` for adding custom activity sources
@@ -180,7 +182,6 @@ public static class Extensions
 
         return builder;
     }
-
 
     public static WebApplication UseCustomObservability(this WebApplication app)
     {
