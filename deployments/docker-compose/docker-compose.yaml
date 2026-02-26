@@ -338,7 +338,7 @@ services:
       args:
         Version: "1"
       context: ../../
-      dockerfile: src/BookingMonolith/dev.Dockerfile
+      dockerfile: src/BookingMonolith/Dockerfile
     container_name: bookingmonolith
     ports:
       - 4001:80
