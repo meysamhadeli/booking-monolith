@@ -1,48 +1,41 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
-WORKDIR /
+# ---------- Build Stage ----------
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
 
-COPY ./.editorconfig ./
-COPY ./global.json ./
-COPY ./Directory.Build.props ./
+# Copy solution-level files
+COPY .editorconfig .
+COPY global.json .
+COPY Directory.Build.props .
 
-# Setup working directory for the project
-COPY ./src/BuildingBlocks/BuildingBlocks.csproj ./src/BuildingBlocks/
-COPY ./src/BookingMonolith/src/BookingMonolith.csproj ./src/BookingMonolith/src/
-COPY ./src/Api/src/Api.csproj ./src/Api/src/
+# Copy project files first (for better Docker layer caching)
+COPY src/BuildingBlocks/BuildingBlocks.csproj src/BuildingBlocks/
+COPY src/BookingMonolith/src/BookingMonolith.csproj src/BookingMonolith/src/
+COPY src/Api/src/Api.csproj src/Api/src/
+COPY src/Aspire/src/ServiceDefaults/ServiceDefaults.csproj src/Aspire/src/ServiceDefaults/
 
-# Restore nuget packages
-RUN --mount=type=cache,id=booking_nuget,target=/root/.nuget/packages \
-    dotnet restore ./src/Api/src/Api.csproj
+# Restore dependencies
+RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
+    dotnet restore src/Api/src/Api.csproj
 
-# Copy project files
-COPY ./src/BuildingBlocks ./src/BuildingBlocks/
-COPY ./src/BookingMonolith/src/ ./src/BookingMonolith/src/
-COPY ./src/Api/src/ ./src/Api/src/
+# Copy the rest of the source code
+COPY src ./src
 
-# Build project with Release configuration
-# and no restore, as we did it already
-RUN ls
-RUN --mount=type=cache,id=booking_nuget,target=/root/.nuget/packages\
-    dotnet build  -c Release --no-restore ./src/Api/src/Api.csproj
+# Publish (build included, no need separate build step)
+RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
+    dotnet publish src/Api/src/Api.csproj \
+    -c Release \
+    -o /app/publish \
+    --no-restore
 
-WORKDIR /src/Api/src
+# ---------- Runtime Stage ----------
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
 
-# Publish project to output folder
-# and no build, as we did it already
-RUN --mount=type=cache,id=booking_nuget,target=/root/.nuget/packages\
-    dotnet publish -c Release --no-build -o out
+COPY --from=build /app/publish .
 
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
-
-# Setup working directory for the project
-WORKDIR /
-COPY --from=builder /src/Api/src/out  .
-
-ENV ASPNETCORE_URLS="https://*:443, http://*:80"
+ENV ASPNETCORE_URLS=http://+:80
 ENV ASPNETCORE_ENVIRONMENT=docker
 
 EXPOSE 80
-EXPOSE 443
 
 ENTRYPOINT ["dotnet", "Api.dll"]
-

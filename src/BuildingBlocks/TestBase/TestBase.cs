@@ -1,6 +1,6 @@
+using System.Globalization;
 using System.Net;
 using System.Security.Claims;
-using Ardalis.GuardClauses;
 using BuildingBlocks.Core.Event;
 using BuildingBlocks.Core.Model;
 using BuildingBlocks.EFCore;
@@ -13,7 +13,6 @@ using Grpc.Net.Client;
 using MassTransit;
 using MassTransit.Testing;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -22,20 +21,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using Npgsql;
 using NSubstitute;
 using Respawn;
+using Testcontainers.EventStoreDb;
+using Testcontainers.MongoDb;
+using Testcontainers.PostgreSql;
+using Testcontainers.RabbitMq;
 using WebMotions.Fake.Authentication.JwtBearer;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace BuildingBlocks.TestBase;
-
-using System.Globalization;
-using Npgsql;
-using Testcontainers.EventStoreDb;
-using Testcontainers.MongoDb;
-using Testcontainers.PostgreSql;
-using Testcontainers.RabbitMq;
 
 public class TestFixture<TEntryPoint> : IAsyncLifetime
     where TEntryPoint : class
@@ -211,45 +208,6 @@ public class TestFixture<TEntryPoint> : IAsyncLifetime
             var published = await TestHarness.Published.Any<TMessage>(cancellationToken);
 
             return published;
-        });
-
-        return result;
-    }
-
-    public async Task<bool> WaitForConsuming<TMessage>(CancellationToken cancellationToken = default)
-        where TMessage : class, IEvent
-    {
-        var result = await WaitUntilConditionMet(async () =>
-        {
-            var consumed = await TestHarness.Consumed.Any<TMessage>(cancellationToken);
-
-            return consumed;
-        });
-
-        return result;
-    }
-
-    public async Task<bool> ShouldProcessedPersistInternalCommand<TInternalCommand>(
-        CancellationToken cancellationToken = default
-    )
-        where TInternalCommand : class, IInternalCommand
-    {
-        var result = await WaitUntilConditionMet(async () =>
-        {
-            return await ExecuteScopeAsync(async sp =>
-            {
-                var persistMessageProcessor = sp.GetService<IPersistMessageProcessor>();
-
-                Guard.Against.Null(persistMessageProcessor, nameof(persistMessageProcessor));
-
-                var filter = await persistMessageProcessor.GetByFilterAsync(x =>
-                    x.DeliveryType == MessageDeliveryType.Internal && typeof(TInternalCommand).ToString() == x.DataType
-                );
-
-                var res = filter.Any(x => x.MessageStatus == MessageStatus.Processed);
-
-                return res;
-            });
         });
 
         return result;
