@@ -1,8 +1,8 @@
 using BookingMonolith.Booking.Bookings.Features.CreatingBook.V1;
 using BookingMonolith.Booking.Bookings.Models;
 using BookingMonolith.Booking.Data;
-using BuildingBlocks.EventStoreDB.Events;
-using BuildingBlocks.EventStoreDB.Projections;
+using Griffin.EventStoreDB.Events;
+using Griffin.EventStoreDB.Projections;
 using MassTransit;
 using MediatR;
 using MongoDB.Driver;

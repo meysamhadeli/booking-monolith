@@ -7,22 +7,26 @@ COPY .editorconfig .
 COPY global.json .
 COPY Directory.Build.props .
 
+# `src/BuildingBlocks` is a git submodule (Griffin) and its sources must be part of the
+# build context, otherwise the glob project reference
+# `<ProjectReference Include="..\..\BuildingBlocks\src\**\*.csproj" />` resolves to nothing.
+# Initialize it before building the image: `git submodule update --init --recursive`
+# (CI does this via `actions/checkout` with `submodules: recursive`).
+
 # Copy project files first (for better Docker layer caching)
-COPY src/BuildingBlocks/BuildingBlocks.csproj src/BuildingBlocks/
+COPY src/BuildingBlocks/ src/BuildingBlocks/
 COPY src/BookingMonolith/src/BookingMonolith.csproj src/BookingMonolith/src/
 COPY src/Api/src/Api.csproj src/Api/src/
 COPY src/Aspire/src/ServiceDefaults/ServiceDefaults.csproj src/Aspire/src/ServiceDefaults/
 
 # Restore dependencies
-RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet restore src/Api/src/Api.csproj
+RUN dotnet restore src/Api/src/Api.csproj
 
 # Copy the rest of the source code
 COPY src ./src
 
 # Publish (build included, no need separate build step)
-RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
-    dotnet publish src/Api/src/Api.csproj \
+RUN dotnet publish src/Api/src/Api.csproj \
     -c Release \
     -o /app/publish \
     --no-restore

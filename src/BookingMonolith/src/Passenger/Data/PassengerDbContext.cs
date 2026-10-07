@@ -1,6 +1,6 @@
 using System.Reflection;
-using BuildingBlocks.EFCore;
-using BuildingBlocks.Web;
+using Griffin.EFCore;
+using Griffin.Web;
 using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

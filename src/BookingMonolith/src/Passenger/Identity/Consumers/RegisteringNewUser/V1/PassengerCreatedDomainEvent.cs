@@ -1,4 +1,4 @@
-using BuildingBlocks.Core.Event;
+using Griffin.Core.Event;
 
 namespace BookingMonolith.Passenger.Identity.Consumers.RegisteringNewUser.V1;
 

@@ -1,8 +1,8 @@
 using BookingMonolith;
-using BuildingBlocks.Caching;
-using BuildingBlocks.EFCore;
-using BuildingBlocks.Logging;
-using BuildingBlocks.Validation;
+using Griffin.Caching;
+using Griffin.EFCore;
+using Griffin.Log;
+using Griffin.Validation;
 using MediatR;
 
 namespace Api.Extensions;

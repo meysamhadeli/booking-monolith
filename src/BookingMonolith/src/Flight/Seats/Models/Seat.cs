@@ -2,7 +2,7 @@ using BookingMonolith.Flight.Flights.ValueObjects;
 using BookingMonolith.Flight.Seats.Features.CreatingSeat.V1;
 using BookingMonolith.Flight.Seats.Features.ReservingSeat.V1;
 using BookingMonolith.Flight.Seats.ValueObjects;
-using BuildingBlocks.Core.Model;
+using Griffin.Core.Model;
 
 namespace BookingMonolith.Flight.Seats.Models;
 

@@ -1,5 +1,5 @@
 using Api.Extensions;
-using BuildingBlocks.Web;
+using Griffin.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 

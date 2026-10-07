@@ -1,9 +1,9 @@
 using BookingMonolith.Identity.Identities.Constants;
 using BookingMonolith.Identity.Identities.Models;
-using BuildingBlocks.Constants;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.EFCore;
+using Griffin.Core.Constants;
+using Griffin.Core.Contracts.EventBus.Messages;
+using Griffin.Core;
+using Griffin.EFCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

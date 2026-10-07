@@ -4,7 +4,7 @@ using BookingMonolith.Flight.Flights.Features.CreatingFlight.V1;
 using BookingMonolith.Flight.Flights.Features.DeletingFlight.V1;
 using BookingMonolith.Flight.Flights.Features.UpdatingFlight.V1;
 using BookingMonolith.Flight.Flights.ValueObjects;
-using BuildingBlocks.Core.Model;
+using Griffin.Core.Model;
 
 namespace BookingMonolith.Flight.Flights.Models;
 

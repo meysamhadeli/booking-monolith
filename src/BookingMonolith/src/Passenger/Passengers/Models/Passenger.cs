@@ -1,7 +1,7 @@
 using BookingMonolith.Passenger.Identity.Consumers.RegisteringNewUser.V1;
 using BookingMonolith.Passenger.Passengers.Features.CompletingRegisterPassenger.V1;
 using BookingMonolith.Passenger.Passengers.ValueObjects;
-using BuildingBlocks.Core.Model;
+using Griffin.Core.Model;
 
 namespace BookingMonolith.Passenger.Passengers.Models;
 

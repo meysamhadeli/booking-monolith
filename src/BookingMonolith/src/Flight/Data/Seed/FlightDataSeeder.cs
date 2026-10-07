@@ -2,7 +2,7 @@ using BookingMonolith.Flight.Aircrafts.Models;
 using BookingMonolith.Flight.Airports.Models;
 using BookingMonolith.Flight.Flights.Models;
 using BookingMonolith.Flight.Seats.Models;
-using BuildingBlocks.EFCore;
+using Griffin.EFCore;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;

@@ -1,4 +1,4 @@
-using BuildingBlocks.Core.Model;
+using Griffin.Core.Model;
 using Microsoft.AspNetCore.Identity;
 
 namespace BookingMonolith.Identity.Identities.Models;

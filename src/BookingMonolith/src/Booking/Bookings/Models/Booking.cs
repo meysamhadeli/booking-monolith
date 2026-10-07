@@ -1,6 +1,6 @@
 using BookingMonolith.Booking.Bookings.Features.CreatingBook.V1;
 using BookingMonolith.Booking.Bookings.ValueObjects;
-using BuildingBlocks.EventStoreDB.Events;
+using Griffin.EventStoreDB.Events;
 
 namespace BookingMonolith.Booking.Bookings.Models;
 

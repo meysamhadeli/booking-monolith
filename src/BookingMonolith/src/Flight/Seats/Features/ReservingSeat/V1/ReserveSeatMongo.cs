@@ -1,8 +1,8 @@
 using Ardalis.GuardClauses;
 using BookingMonolith.Flight.Data;
 using BookingMonolith.Flight.Seats.Models;
-using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Core.Event;
+using Griffin.Core.CQRS;
+using Griffin.Core.Event;
 using MapsterMapper;
 using MediatR;
 using MongoDB.Driver;
