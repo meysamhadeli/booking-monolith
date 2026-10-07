@@ -1,9 +1,9 @@
 using Ardalis.GuardClauses;
 using BookingMonolith.Flight.Data;
 using BookingMonolith.Flight.Seats.Exceptions;
-using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Core.Event;
-using BuildingBlocks.Web;
+using Griffin.Core.CQRS;
+using Griffin.Core.Event;
+using Griffin.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;

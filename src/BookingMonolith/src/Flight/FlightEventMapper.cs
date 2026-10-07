@@ -5,9 +5,9 @@ using BookingMonolith.Flight.Flights.Features.DeletingFlight.V1;
 using BookingMonolith.Flight.Flights.Features.UpdatingFlight.V1;
 using BookingMonolith.Flight.Seats.Features.CreatingSeat.V1;
 using BookingMonolith.Flight.Seats.Features.ReservingSeat.V1;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.Core.Event;
+using Griffin.Core.Contracts.EventBus.Messages;
+using Griffin.Core;
+using Griffin.Core.Event;
 
 namespace BookingMonolith.Flight;
 

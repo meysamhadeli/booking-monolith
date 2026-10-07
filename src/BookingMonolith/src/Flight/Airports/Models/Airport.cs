@@ -1,6 +1,6 @@
 using BookingMonolith.Flight.Airports.Features.CreatingAirport.V1;
 using BookingMonolith.Flight.Airports.ValueObjects;
-using BuildingBlocks.Core.Model;
+using Griffin.Core.Model;
 
 namespace BookingMonolith.Flight.Airports.Models;
 

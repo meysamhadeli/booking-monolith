@@ -1,0 +1,17 @@
+<Project>
+
+  <!--
+    `Griffin.TestBase` (from the BuildingBlocks/Griffin submodule) is a test-support *library*,
+    not a test project. Because it references `xunit`, `xunit.core.props` sets
+    `IsTestProject=true`, which makes `dotnet test` try to execute the library as a test assembly.
+    Library outputs don't include NuGet package DLLs, so the test host aborts with a
+    "assembly ... was not found" error.
+
+    This must live in `Directory.Build.targets` (not `.props`): `xunit.core.props` is imported
+    via the generated `*.nuget.g.props`, which is evaluated after `Directory.Build.props`.
+  -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Griffin.TestBase'">
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+</Project>

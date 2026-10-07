@@ -1,5 +1,5 @@
 using BookingMonolith.Booking.Bookings.Models;
-using BuildingBlocks.Mongo;
+using Griffin.Mongo;
 using Humanizer;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;

@@ -1,6 +1,6 @@
 using BookingMonolith.Flight.Aircrafts.Features.CreatingAircraft.V1;
 using BookingMonolith.Flight.Aircrafts.ValueObjects;
-using BuildingBlocks.Core.Model;
+using Griffin.Core.Model;
 
 namespace BookingMonolith.Flight.Aircrafts.Models;
 

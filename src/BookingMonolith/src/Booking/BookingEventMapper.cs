@@ -1,7 +1,7 @@
 using BookingMonolith.Booking.Bookings.Features.CreatingBook.V1;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.Core.Event;
+using Griffin.Core.Contracts.EventBus.Messages;
+using Griffin.Core;
+using Griffin.Core.Event;
 
 namespace BookingMonolith.Booking;
 

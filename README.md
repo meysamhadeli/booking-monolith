@@ -13,6 +13,8 @@
 - [Booking with Microservices Architecture](https://github.com/meysamhadeli/booking-microservices)
 - [Booking with Modular Monolith Architecture](https://github.com/meysamhadeli/booking-modular-monolith)
 
+## You can find the reusable infrastructure library (Griffin) of this project here:
+- [Griffin](https://github.com/meysamhadeli/Griffin)
 
 <div>
   <a href='https://codespaces.new/meysamhadeli/booking-monolith?quickstart=1'><img alt='Open in GitHub Codespaces' src='https://github.com/codespaces/badge.svg'></a>
@@ -28,6 +30,7 @@
 - [The Domain and Bounded Context](#the-domain-and-bounded-context)
 - [Structure of Project](#structure-of-project)
 - [Development Setup](#development-setup)
+    - [BuildingBlocks Git Submodule](#buildingblocks-git-submodule)
     - [Dotnet Tools Packages](#dotnet-tools-packages)
     - [Husky](#husky)
     - [Upgrade Nuget Packages](#upgrade-nuget-packages)
@@ -49,11 +52,12 @@
 - :sparkle: Using `Domain Driven Design (DDD)` to implement all `business logic`.
 - :sparkle: Using `CQRS` implementation with `MediatR` library.
 - :sparkle: Using `Postgres` for `write side` database.
-- :sparkle: Using `InMemory Broker` on top of `Masstransit` for `Event Driven Architecture`.
+- :sparkle: Using `InMemory Broker` on top of `Wolverine` for `Event Driven Architecture`.
 - :sparkle: Using `MongoDB` for `read side` database.
 - :sparkle: Using `Event Store` for `write side` of Booking to store all `historical change` of aggregate.
-- :sparkle: Using `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`.
-- :sparkle: Using `Outbox Pattern` for ensuring no message is lost and there is at `At Least One Delivery`.
+- :sparkle: Using `Wolverine` durable `Inbox Pattern` for ensuring message idempotency for receiver and `Exactly once Delivery`.
+- :sparkle: Using `Wolverine` durable `Outbox Pattern` for ensuring no message is lost and there is at `At Least One Delivery`.
+- :sparkle: Using `Wolverine` durable local queues for `internal commands` and asynchronous in-process workflows.
 - :sparkle: Using `Unit Testing` for testing small units and mocking our dependencies with `Nsubstitute`.
 - :sparkle: Using `End-To-End Testing` and `Integration Testing` for testing `features` with all dependencies using `testcontainers`.
 - :sparkle: Using `Fluent Validation` and a `Validation Pipeline Behaviour` on top of `MediatR`.
@@ -73,7 +77,7 @@
 - ✔️ **[`MVC Versioning API`](https://github.com/microsoft/aspnet-api-versioning)** - Set of libraries which add service API versioning to ASP.NET Web API, OData with ASP.NET Web API, and ASP.NET Core.
 - ✔️ **[`EF Core`](https://github.com/dotnet/efcore)** - Modern object-database mapper for .NET. It supports LINQ queries, change tracking, updates, and schema migrations.
 - ✔️ **[`AspNetCore OpenApi`](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi)** - Provides built-in support for OpenAPI document generation in ASP.NET Core.
-- ✔️ **[`Masstransit`](https://github.com/MassTransit/MassTransit)** - Distributed Application Framework for .NET.
+- ✔️ **[`Wolverine`](https://wolverinefx.io/)** - Durable messaging and local workflow library for .NET with an in-memory transport, durable inbox/outbox support, and durable local queues.
 - ✔️ **[`MediatR`](https://github.com/jbogard/MediatR)** - Simple, unambitious mediator implementation in .NET.
 - ✔️ **[`FluentValidation`](https://github.com/FluentValidation/FluentValidation)** - Popular .NET validation library for building strongly-typed validation rules.
 - ✔️ **[`Scalar`](https://github.com/scalar/scalar/tree/main/packages/scalar.aspnetcore)** - Scalar provides an easy way to render beautiful API references based on OpenAPI/Swagger documents.
@@ -154,8 +158,22 @@ I used CQRS to decompose my features into small parts that makes our application
 
 Using the CQRS pattern, we cut each business functionality into vertical slices, for each of these slices we group classes (see [technical folders structure](http://www.kamilgrzybek.com/design/feature-folders)) specific to that feature together (command, handlers, infrastructure, repository, controllers, etc). In our CQRS pattern each command/query handler is a separate slice. This is where you can reduce coupling between layers. Each handler can be a separated code unit, even copy/pasted. Thanks to that, we can tune down the specific method to not follow general conventions (e.g. use custom SQL query or even different storage). In a traditional layered architecture, when we change the core generic mechanism in one layer, it can impact all methods.
 
+For asynchronous messaging, this project uses `Wolverine` with the `InMemory` transport and `PostgreSQL` durability. `Wolverine` handles durable inbox/outbox delivery and also persists local `internal commands` through durable local queues, so integration events and in-process asynchronous workflows follow the same messaging model.
+
+The shared infrastructure (CQRS, DDD building blocks, EF Core, EventStoreDB, Wolverine, observability, and testing helpers) is not kept inside this repository. It lives in the reusable [Griffin](https://github.com/meysamhadeli/Griffin) library and is consumed here as the `src/BuildingBlocks` git submodule, so the same infrastructure can be shared across the [Booking](https://github.com/meysamhadeli/booking-microservices) projects.
+
 
 ## Development Setup
+
+### BuildingBlocks Git Submodule
+
+`src/BuildingBlocks` is a submodule from the [Griffin repository](https://github.com/meysamhadeli/Griffin) and is already referenced by the project, so we only need to initialize it:
+
+```bash
+git submodule update --init src/BuildingBlocks
+```
+
+> Note: A fresh clone can fetch the submodule in one step with `git clone --recurse-submodules`.
 
 ### Dotnet Tools Packages
 For installing our requirement packages with .NET cli tools, we need to install `dotnet tool manifest`.

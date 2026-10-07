@@ -1,7 +1,7 @@
 using BookingMonolith.Identity.Configurations;
 using BookingMonolith.Identity.Data;
 using BookingMonolith.Identity.Identities.Models;
-using BuildingBlocks.Web;
+using Griffin.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

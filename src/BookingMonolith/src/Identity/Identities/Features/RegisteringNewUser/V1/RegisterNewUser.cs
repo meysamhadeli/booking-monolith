@@ -1,11 +1,11 @@
 using Ardalis.GuardClauses;
 using BookingMonolith.Identity.Identities.Exceptions;
 using BookingMonolith.Identity.Identities.Models;
-using BuildingBlocks.Constants;
-using BuildingBlocks.Contracts.EventBus.Messages;
-using BuildingBlocks.Core;
-using BuildingBlocks.Core.CQRS;
-using BuildingBlocks.Web;
+using Griffin.Core.Constants;
+using Griffin.Core.Contracts.EventBus.Messages;
+using Griffin.Core;
+using Griffin.Core.CQRS;
+using Griffin.Web;
 using Duende.IdentityServer.EntityFramework.Entities;
 using FluentValidation;
 using Mapster;

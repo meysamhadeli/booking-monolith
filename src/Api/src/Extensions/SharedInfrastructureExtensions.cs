@@ -6,17 +6,16 @@ using BookingMonolith.Identity.Data;
 using BookingMonolith.Identity.Data.Seed;
 using BookingMonolith.Identity.Extensions.Infrastructure;
 using BookingMonolith.Passenger.Data;
-using BuildingBlocks.Core;
-using BuildingBlocks.EFCore;
-using BuildingBlocks.EventStoreDB;
-using BuildingBlocks.Jwt;
-using BuildingBlocks.Mapster;
-using BuildingBlocks.MassTransit;
-using BuildingBlocks.Mongo;
-using BuildingBlocks.OpenApi;
-using BuildingBlocks.PersistMessageProcessor;
-using BuildingBlocks.ProblemDetails;
-using BuildingBlocks.Web;
+using Griffin.Core;
+using Griffin.EFCore;
+using Griffin.EventStoreDB;
+using Griffin.Jwt;
+using Griffin.Mapster;
+using Griffin.Wolverine;
+using Griffin.Mongo;
+using Griffin.OpenApi;
+using Griffin.ProblemDetails;
+using Griffin.Web;
 using Figgle.Fonts;
 using FluentValidation;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -36,7 +35,6 @@ public static class SharedInfrastructureExtensions
         builder.Services.AddJwt();
         builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         builder.Services.AddTransient<AuthHeaderHandler>();
-        builder.AddPersistMessageProcessor();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddControllers();
@@ -46,10 +44,11 @@ public static class SharedInfrastructureExtensions
         builder.Services.AddScoped<IEventDispatcher, EventDispatcher>();
         builder.Services.AddCustomMediatR();
 
-        builder.Services.AddCustomMassTransit(
+        builder.AddCustomWolverine(
             builder.Environment,
             TransportType.InMemory,
-            AppDomain.CurrentDomain.GetAssemblies()
+            nameof(BookingMonolith),
+            typeof(BookingMonolithRoot).Assembly
         );
 
         builder.Services.Scan(scan =>
